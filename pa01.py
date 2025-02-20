@@ -197,7 +197,7 @@ def main():
     ##################
 
     key, key_dimensions = key_parser(key)
-    print("Key matrix:")
+    print("\nKey matrix:")
     print_sqr_matrix(key, key_dimensions)
 
     ##############
