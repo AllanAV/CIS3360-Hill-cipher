@@ -30,6 +30,7 @@ cipher_text = ""
 
 
 def read_file(file_name: str) -> str:
+
     file_object = None
     file_content = None
 
@@ -39,9 +40,6 @@ def read_file(file_name: str) -> str:
                 print(f"{file_name} is empty!")
             else:
                 file_content = file_object.read()
-
-        # print("type(file_content) =", type(file_content))
-        # print("file_content\n", file_content)
 
     except FileNotFoundError as open_error:
         file_object.flush()
@@ -53,6 +51,7 @@ def read_file(file_name: str) -> str:
 
 
 def key_parser(key):
+
     if key:
         # KEY file contents parsing
         key_dimensions = int(key[:key.find("\n")])
@@ -60,11 +59,13 @@ def key_parser(key):
 
         # Building Key Matrix key_dimensions * key_dimensions
         i = 0
-        key = [[] for _ in range(key_dimensions)]
-        # Each sub list is a matrix Row
-        for element in range(key_dimensions):
-            for item in range(key_dimensions):
-                key[element].append(int(temp[i]))
+        key = [[] for numbers in range(key_dimensions)]
+
+        # Each sub list is a matrix row
+        for row in range(key_dimensions):  # Key rows
+            for item in range(key_dimensions):  # Key elements within rows
+
+                key[row].append(int(temp[i]))
                 i += 1
 
     return key, key_dimensions
@@ -80,7 +81,8 @@ def format_plaintext(plain_text: str, key_dimension: int) -> str:
 
         for letter in plain_text:
             if letter.isalpha():
-                if letter.isascii():
+                if letter.isascii():  # Removes specail alpha characters
+
                     temp += letter
             else:
                 pass
@@ -107,13 +109,13 @@ def create_plain_text_matrix(content, key_dimension: int):
         # print(int(len(content)/key_dimension))
 
         for vectors in range(int(len(content)/key_dimension)):
-
             for elements in range(key_dimension):
 
                 matrix[vectors].append(ord(content[i])-ord("a"))
                 i += 1
     else:
         while (len(content) % key_dimension):
+
             content = content + "x"
 
         i = 0
@@ -121,7 +123,6 @@ def create_plain_text_matrix(content, key_dimension: int):
         temp = content.split()
 
         for vectors in range(int(len(content)/key_dimension)):
-
             for elements in range(key_dimension):
 
                 matrix[vectors].append(ord(content[i])-ord("a"))
@@ -131,19 +132,21 @@ def create_plain_text_matrix(content, key_dimension: int):
 
 
 def print_sqr_matrix(matrix: list, dimention: int):
-    for rows in range(dimention):
-        for columns in range(dimention):
+    for rows in range(dimention):  # Key rows
+        for columns in range(dimention):  # elements in each row
+
             print("%4d" % matrix[rows][columns], end="")
-        print()
+        print()  # Break each row
 
 
 def hill_cipher(key_matrix, plain_text_vectors, key_dimensions):
 
     cipher_text_str = ""
     temp: int = 0
-    for vectors in range(len(plain_text_vectors)):  # plain text sets
-        for rows in range(key_dimensions):  # rows of key
-            for elements in range(key_dimensions):
+    for vectors in range(len(plain_text_vectors)):  # Plain text sets (vectors)
+        for rows in range(key_dimensions):          # Key rows
+            for elements in range(key_dimensions):  # Key and Plain text elements
+
                 temp += (key_matrix[rows][elements] *
                          plain_text_vectors[vectors][elements])
             temp = (temp % 26)+ord("a")
@@ -153,16 +156,20 @@ def hill_cipher(key_matrix, plain_text_vectors, key_dimensions):
 
 
 def eighty_char_row_output(cipher):
+
     formatted_output = ""
+
     for i in range(len(cipher)):
-        # formatted_output += cipher[i:(i+1)]
         if i > 1 and (not (i % 80)):
+
             formatted_output += "\n"
         formatted_output += cipher[i:(i+1)]
+
     return formatted_output
 
 
 def main():
+
     global key
     global key_dimensions
     global key_file_name
@@ -170,20 +177,22 @@ def main():
     global plain_text_file_name
     global cipher_text
 
-    # Reads terminal arguments into arg_in
+    # Removes program name and reads terminal arguments into arg_in
     arg_in = sys.argv[1:]
 
     #########################################
     # VALIDATE NUMBER OF TERMINAL ARGUMENTS #
     #########################################
-
     if len(arg_in) < 2:
+
         print("Not enough arguments!")
         print("Please enter the file names for: Encyption Key followed by Plain Text.")
     elif len(arg_in) > 2:
+
         print("Too many arguments!")
         print("Please enter the file names for: Encyption Key followed by Plain Text.")
     else:
+
         key_file_name = arg_in[0]
         plain_text_file_name = arg_in[1]
         # print("""The terminal arguments recived were:""" +
@@ -193,7 +202,7 @@ def main():
         plain_text = read_file(plain_text_file_name)
 
     ##################
-    # ENCRIPTION KEY #
+    # ENCRYPTION KEY #
     ##################
 
     key, key_dimensions = key_parser(key)
@@ -215,7 +224,6 @@ def main():
 
     cipher_text = hill_cipher(key, plain_text_matrix, key_dimensions)
     cipher_text = eighty_char_row_output(cipher_text)
-
     print("\nCiphertext:\n" + cipher_text)
 
 
@@ -223,7 +231,7 @@ if __name__ == '__main__':
     main()
 
 
-#       I Allan Aquino Vieira (a) affirm that this program is
+#       I Allan Aquino Vieira () affirm that this program is
 # entirely my own work and that I have neither developed my code together with
 # any another person, nor copied any code from any other person, nor permitted
 # my code to be copied or otherwise used by any other person, nor have I
